@@ -8,14 +8,28 @@ class DBHelper {
    * Change this to restaurants.json file location on your server.
    */
   static get DATABASE_URL() {
-    const port = 8000 // Change this to your server port
+    const port = 1337 // Change this to your server port
     return `http://localhost:${port}/data/restaurants.json`;
   }
+
+  /* Start your server project (localhost:1337).
+  2. Change the classic xmlhttprequest in the restaurant project
+  (localhost:8000), and use fetch api instead to target your server
+  (localhost:1337). If everything went fine, your restaurant page is gonna
+  look exactly the same :) 3. Store the fetched json in indexedDB,
+  but it's a later problem :)
+  */
 
   /**
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
+    fetch('http://localhost:1337/restaurants')
+      .then(response => response.json())
+      .catch(error => console.error('Error', error));
+
+
+    /*
     let xhr = new XMLHttpRequest();
     xhr.open('GET', DBHelper.DATABASE_URL);
     xhr.onload = () => {
@@ -29,12 +43,18 @@ class DBHelper {
       }
     };
     xhr.send();
+    */
   }
 
   /**
    * Fetch a restaurant by its ID.
    */
   static fetchRestaurantById(id, callback) {
+    fetch(`http://localhost:1337/restaurants/{3}`)
+      .then(response => response.json())
+      .catch(error => console.error('Error', error));
+
+    /*
     // fetch all restaurants with proper error handling.
     DBHelper.fetchRestaurants((error, restaurants) => {
       if (error) {
@@ -48,6 +68,7 @@ class DBHelper {
         }
       }
     });
+    */
   }
 
   /**
