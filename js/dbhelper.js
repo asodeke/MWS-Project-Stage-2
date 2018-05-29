@@ -9,66 +9,35 @@ class DBHelper {
    */
   static get DATABASE_URL() {
     const port = 1337 // Change this to your server port
-    return `http://localhost:${port}/data/restaurants.json`;
+    return `http://localhost:${port}/restaurants`/;
   }
-
-  /* Start your server project (localhost:1337).
-  2. Change the classic xmlhttprequest in the restaurant project
-  (localhost:8000), and use fetch api instead to target your server
-  (localhost:1337). If everything went fine, your restaurant page is gonna
-  look exactly the same :) 3. Store the fetched json in indexedDB,
-  but it's a later problem :)
-  */
 
   /**
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    fetch('http://localhost:1337/restaurants')
-      .then(response => response.json())
-      .catch(error => console.error('Error', error));
-
-
-    /*
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', DBHelper.DATABASE_URL);
-    xhr.onload = () => {
-      if (xhr.status === 200) { // Got a success response from server!
-        const json = JSON.parse(xhr.responseText);
-        const restaurants = json.restaurants;
-        callback(null, restaurants);
-      } else { // Oops!. Got an error from server.
-        const error = (`Request failed. Returned status of ${xhr.status}`);
-        callback(error, null);
+    fetch(DBHelper.DATABASE_URL).then(response => response.json())
+      //return restaurant from the database
+      .then(restaurants => callback(null,restaurants))
+      .catch(err => {
+        DBHelper.getLocalRestaurantsData()
+        .then(restaurants => callback (null, restaurants))
       }
-    };
-    xhr.send();
-    */
+    );
   }
 
   /**
    * Fetch a restaurant by its ID.
    */
   static fetchRestaurantById(id, callback) {
-    fetch(`http://localhost:1337/restaurants/{3}`)
-      .then(response => response.json())
-      .catch(error => console.error('Error', error));
-
-    /*
-    // fetch all restaurants with proper error handling.
-    DBHelper.fetchRestaurants((error, restaurants) => {
-      if (error) {
-        callback(error, null);
-      } else {
-        const restaurant = restaurants.find(r => r.id == id);
-        if (restaurant) { // Got the restaurant
-          callback(null, restaurant);
-        } else { // Restaurant does not exist in the database
-          callback('Restaurant does not exist', null);
-        }
+    fetch(`${DBHelper.DATABASE_URL}${id}`).then(response => response.json())
+      //return restaurant from the database
+      .then(restaurant => callback(null,restaurant))
+      //catch error
+      .catch(err => {
+        callback (err,null);
       }
-    });
-    */
+    );
   }
 
   /**
