@@ -20,8 +20,9 @@ class DBHelper {
       //return restaurant from the database
       .then(restaurants => callback(null,restaurants))
       .catch(err => {
-        DBHelper.getLocalRestaurantsData()
-        .then(restaurants => callback (null, restaurants))
+        callback(err,null);
+        //DBHelper.getLocalRestaurantsData()
+        //.then(restaurants => callback (null, restaurants))
       }
     );
   }
