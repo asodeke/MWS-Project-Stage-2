@@ -1,5 +1,5 @@
 import idb from 'idb';
-
+var dbPromise;
 /**
  * Common database helper functions.
  */
@@ -8,19 +8,19 @@ class DBHelper {
   /**
    * Open IDB Database
    */
-  static openDatabase() {
-   var dbPromise =  idb.open('restaurants', 1 , function(upgradeDb) {
+   var dbPromise = idb.open('restaurants', 1 , function(upgradeDb) {
      upgradeDb.createObjectStore('restaurants',{keyPath: 'id'});
-     });
-  }
+   });
 
   /**
    * Show cached messages
    */
-   static getCacheMessages() {
-
-   }
-
+  dbPromise.then(function(db) {
+    if (!db) return;
+    var tx = db.transaction('restaurants');
+    var keyValStore = tx.objectStore('restaurants');
+    return store.getAll();
+  });
 
   /**
    * Database URL.

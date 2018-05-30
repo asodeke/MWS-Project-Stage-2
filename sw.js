@@ -8,8 +8,8 @@ self.addEventListener('install', function(event) {
           'js/main.js',
           'js/restaurant_info.js',
           'js/dbhelper.js',
-          'img/',
           'index.html',
+          'img/',
           'restaurant.html',
           'css/final.css',
           'css/styles.css'
