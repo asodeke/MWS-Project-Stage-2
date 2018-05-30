@@ -1,7 +1,26 @@
+import idb from 'idb';
+
 /**
  * Common database helper functions.
  */
 class DBHelper {
+
+  /**
+   * Open IDB Database
+   */
+  static openDatabase() {
+   var dbPromise =  idb.open('restaurants', 1 , function(upgradeDb) {
+     upgradeDb.createObjectStore('restaurants',{keyPath: 'id'});
+     });
+  }
+
+  /**
+   * Show cached messages
+   */
+   static getCacheMessages() {
+
+   }
+
 
   /**
    * Database URL.
@@ -9,7 +28,7 @@ class DBHelper {
    */
   static get DATABASE_URL() {
     const port = 1337 // Change this to your server port
-    return `http://localhost:${port}/restaurants`/;
+    return `http://localhost:${port}/restaurants/`;
   }
 
   /**
@@ -141,7 +160,7 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    return (`/img/${restaurant.photograph}`);
+    return (`/img/${restaurant.photograph}.jpg`);
   }
 
   /**
