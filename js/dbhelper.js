@@ -1,5 +1,3 @@
-import idb from 'idb';
-var dbPromise;
 /**
  * Common database helper functions.
  */
@@ -8,19 +6,37 @@ class DBHelper {
   /**
    * Open IDB Database
    */
-   var dbPromise = idb.open('restaurants', 1 , function(upgradeDb) {
-     upgradeDb.createObjectStore('restaurants',{keyPath: 'id'});
+  static openDatabase() {
+    // create database name and version and callback
+    return idb.open('restaurants', 1 , function(upgradeDb) {
+    //create and returns a new object store or index
+     upgradeDb.createObjectStore('restaurants',{
+       keyPath: 'id'
+     });
    });
+  }
 
   /**
-   * Show cached messages
+   * Show cached messages, by reading from the database opened above
    */
-  dbPromise.then(function(db) {
-    if (!db) return;
-    var tx = db.transaction('restaurants');
-    var keyValStore = tx.objectStore('restaurants');
-    return store.getAll();
-  });
+  static cacheRestaurants() {
+    return DBHelper.openDatabase().then(function(db) {
+      if (!db) return;
+
+      //create transaction to write to database
+      const tx = db.transaction('restaurants', 'readwrite');
+      const store = tx.objectStore('restaurants');
+
+      return Promise.all(restaurants.map(function (restaurant) {
+        return store.put(restuarant);
+      })).then(function () {
+        return restuarants;
+      }).catch(function () {
+        tx.abort();
+        throw Error('Restaurants were not added to DB');
+      });
+    });
+  }
 
   /**
    * Database URL.
