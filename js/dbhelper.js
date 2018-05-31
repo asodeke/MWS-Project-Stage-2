@@ -7,10 +7,16 @@ class DBHelper {
    * Open IDB Database
    */
   static openDatabase() {
+    //check for browser support
+    if (!('indexedDB' in window)) {
+    console.log('This browser doesn\'t support IndexedDB');
+    return;
+    }
+
     // create database name and version and callback
     return idb.open('restaurants', 1 , function(upgradeDb) {
     //create and returns a new object store or index
-     upgradeDb.createObjectStore('restaurants',{
+     upgradeDb.createObjectStore('restaurants', {
        keyPath: 'id'
      });
    });
@@ -27,15 +33,23 @@ class DBHelper {
       const tx = db.transaction('restaurants', 'readwrite');
       const store = tx.objectStore('restaurants');
 
+      return Promise.all(restaurants.map(restaurant =>
+        store.put(restaurant))).then(() => {return restaurants})
+        .catch (() => {
+          tx.abort();
+          throw ('Restaurants were not added to db');
+        });
+      });
+    /*
       return Promise.all(restaurants.map(function (restaurant) {
-        return store.put(restuarant);
+        return store.put(restaurant);
       })).then(function () {
-        return restuarants;
+        return restaurants;
       }).catch(function () {
         tx.abort();
-        throw Error('Restaurants were not added to DB');
+        throw ('Restaurants were not added to DB');
       });
-    });
+    });*/
   }
 
   /**
@@ -51,13 +65,18 @@ class DBHelper {
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
+    //get restaurants from server
     fetch(DBHelper.DATABASE_URL).then(response => response.json())
-      //return restaurant from the database
-      .then(restaurants => callback(null,restaurants))
-      .catch(err => {
+      //.then(restaurants => callback(null,restaurants))
+      .then(restaurants =>
+            //add the restaurants to the server
+            DBHelper.cacheRestaurants(restaurants)
+      ).then(restaurants =>
+            //send the restaurants to callback to update the UI
+            callback(null, restaurants)
+      ).catch(err => {
+        //catch any error
         callback(err,null);
-        //DBHelper.getLocalRestaurantsData()
-        //.then(restaurants => callback (null, restaurants))
       }
     );
   }
