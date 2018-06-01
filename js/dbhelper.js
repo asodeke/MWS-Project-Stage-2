@@ -14,28 +14,26 @@ class DBHelper {
     }
 
     // create database name and version and callback
-    return idb.open('restaurants', 1 , function(upgradeDb) {
+    return idb.open('restaurants', 1 , upgradeDB => {
     //create and returns a new object store or index
-     upgradeDb.createObjectStore('restaurants', {
-       keyPath: 'id'
-     });
-   });
+        upgradeDB.createObjectStore('restaurants', { keyPath: 'id'});
+    });
   }
 
   /**
    * Show cached messages, by reading from the database opened above
    */
-  static cacheRestaurants() {
-    return DBHelper.openDatabase().then(function(db) {
-      if (!db) return;
+  static cacheRestaurants(restaurants) {
+    return DBHelper.openDatabase().then(db => {
 
       //create transaction to write to database
       const tx = db.transaction('restaurants', 'readwrite');
       const store = tx.objectStore('restaurants');
 
+      // add all the restaurants to indexDB
       return Promise.all(restaurants.map(restaurant =>
         store.put(restaurant))).then(() => {return restaurants})
-        .catch (() => {
+      .catch (() => {
           tx.abort();
           throw ('Restaurants were not added to db');
         });
