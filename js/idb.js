@@ -1,3 +1,5 @@
+/*https://github.com/jakearchibald/idb/blob/master/lib/idb.js*/
+
 'use strict';
 
 (function() {

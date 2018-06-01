@@ -1,3 +1,5 @@
+/* https://developers.google.com/web/fundamentals/web-app-manifest/ */
+
 {
     "short_name": "RWS",
     "name": "Restaurant Reviews",
