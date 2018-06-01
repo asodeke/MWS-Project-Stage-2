@@ -23,6 +23,7 @@ class DBHelper {
   /**
    * Show cached messages, by reading from the database opened above
    */
+   //Got some assitance from my mentor Georgios writing this code
   static cacheRestaurants(restaurants) {
     return DBHelper.openDatabase().then(db => {
 
@@ -62,6 +63,7 @@ class DBHelper {
   /**
    * Fetch all restaurants.
    */
+   //Got some assitance from my mentor Georgios writing this code
   static fetchRestaurants(callback) {
     //get restaurants from server
     fetch(DBHelper.DATABASE_URL).then(response => response.json())
