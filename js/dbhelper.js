@@ -65,6 +65,11 @@ class DBHelper {
    */
    //Got some assitance from my mentor Georgios writing this code
   static fetchRestaurants(callback) {
+    //Query indexDB for data first
+    DBHelper.cacheRestaurants().then(function(data){
+      if(data.length > 0){
+        return callback(null, data);
+      }
     //get restaurants from server
     fetch(DBHelper.DATABASE_URL).then(response => response.json())
       //.then(restaurants => callback(null,restaurants))
@@ -77,15 +82,16 @@ class DBHelper {
       ).catch(err => {
         //catch any error
         callback(err,null);
-      }
-    );
+      });
+    });
   }
 
   /**
    * Fetch a restaurant by its ID.
    */
   static fetchRestaurantById(id, callback) {
-    fetch(`${DBHelper.DATABASE_URL}${id}`).then(response => response.json())
+    //fetch(`${DBHelper.DATABASE_URL}${id}`).then(response => response.json())
+    fetch(`${DBHelper.fetchRestaurants()}${id}`).then(response => response.json())
       //return restaurant from the database
       .then(restaurant => callback(null,restaurant))
       //catch error
