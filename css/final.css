@@ -72,7 +72,7 @@ footer {
 @media screen and (max-width: 800px){
   #restaurants-list li {
   	width: 80%;
-    margin: 2px -40px;
+    margin: 2px 20px;
   }
 }
 
@@ -98,7 +98,7 @@ figcaption {
 @media screen and (max-width: 799px) {
   #restaurant-container {
     order: -1;
-    width: 100%;
+    width: 70%;
     margin: 440px 0 0 0;
   }
 
@@ -110,13 +110,18 @@ figcaption {
 
   #reviews-container {
     order: 1;
-    width: 100%;
+    width: 70%;
+  }
+
+  #reviews-list li {
+    width: 100%
   }
 
   .inside #footer {
     order: 2;
-    position: fixed;
+    width: 91.5%;
   }
+
   #restaurant-address,
   #restaurant-hours td,
   #reviews-list li p {
