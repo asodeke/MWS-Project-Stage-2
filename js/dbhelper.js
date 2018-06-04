@@ -82,20 +82,25 @@ class DBHelper {
     //});
   }
 
+  //Got some assitance from my mentor Georgios writing this code
   /**
    * Fetch a restaurant by its ID.
    */
   static fetchRestaurantById(id, callback) {
-    // fetch all restaurants with proper error handling.
-   DBHelper.fetchRestaurants((error, restaurants) => {
+    // fetch all restaurants
+   DBHelper.fetchRestaurants(function (error, restaurants) {
      if (error) {
        callback(error, null);
      } else {
-       const restaurant = restaurants.find(r => r.id == id);
-       if (restaurant) { // Got the restaurant
+       const restaurant = restaurants.find(function(rest) {
+         return rest.id == id;
+       });
+       if (restaurant) {
+         // Got the restaurant
          callback(null, restaurant);
-       } else { // Restaurant does not exist in the database
-         callback('Restaurant does not exist', null);
+       } else {
+         // Restaurant not found in the database
+         callback('Restaurant not found', null);
        }
      }
    });
