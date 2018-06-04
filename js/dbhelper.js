@@ -26,6 +26,7 @@ class DBHelper {
    //Got some assitance from my mentor Georgios writing this code
   static cacheRestaurants(restaurants) {
     return DBHelper.openDatabase().then(db => {
+      if(!db) return;
 
       //create transaction to write to database
       const tx = db.transaction('restaurants', 'readwrite');
@@ -39,6 +40,7 @@ class DBHelper {
           throw ('Restaurants were not added to db');
         });
       });
+    }
     /*
       return Promise.all(restaurants.map(function (restaurant) {
         return store.put(restaurant);
@@ -49,7 +51,6 @@ class DBHelper {
         throw ('Restaurants were not added to DB');
       });
     });*/
-  }
 
   /**
    * Database URL.
@@ -65,11 +66,6 @@ class DBHelper {
    */
    //Got some assitance from my mentor Georgios writing this code
   static fetchRestaurants(callback) {
-    //Query indexDB for data first
-    DBHelper.cacheRestaurants().then(function(data){
-      if(data.length > 0){
-        return callback(null, data);
-      }
     //get restaurants from server
     fetch(DBHelper.DATABASE_URL).then(response => response.json())
       //.then(restaurants => callback(null,restaurants))
@@ -83,15 +79,31 @@ class DBHelper {
         //catch any error
         callback(err,null);
       });
-    });
+    //});
   }
 
   /**
    * Fetch a restaurant by its ID.
    */
   static fetchRestaurantById(id, callback) {
+    // fetch all restaurants with proper error handling.
+   DBHelper.fetchRestaurants((error, restaurants) => {
+     if (error) {
+       callback(error, null);
+     } else {
+       const restaurant = restaurants.find(r => r.id == id);
+       if (restaurant) { // Got the restaurant
+         callback(null, restaurant);
+       } else { // Restaurant does not exist in the database
+         callback('Restaurant does not exist', null);
+       }
+     }
+   });
+ }
+
     //fetch(`${DBHelper.DATABASE_URL}${id}`).then(response => response.json())
-    fetch(`${DBHelper.fetchRestaurants()}${id}`).then(response => response.json())
+    /*
+    fetch(`${DBHelper.fetchRestaurants}${id}`).then(response => response.json())
       //return restaurant from the database
       .then(restaurant => callback(null,restaurant))
       //catch error
@@ -99,7 +111,7 @@ class DBHelper {
         callback (err,null);
       }
     );
-  }
+  }*/
 
   /**
    * Fetch restaurants by a cuisine type with proper error handling.
